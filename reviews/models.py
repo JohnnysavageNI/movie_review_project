@@ -1,5 +1,7 @@
 from django.db import models
+from django.db.models import Avg
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 STATUS = ((0, "Draft"), (1, "Published"))
 APPROVAL = ((0, "Pending"), (1, "Approved"))
@@ -23,6 +25,9 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+    def average_rating(self):
+        return self.review_set.aggregate(Avg('rating'))['rating__avg']
+
 
 class Review(models.Model):
     movie = models.ForeignKey(
@@ -35,7 +40,9 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews'
     )
-    rating = models.PositiveIntegerField()
+    rating = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(

@@ -1,0 +1,20 @@
+<h1>{{ movie.title }}</h1>
+<p><strong>Genre:</strong> {{ movie.genre }}</p>
+<p>{{ movie.description }}</p>
+
+<h2>Reviews</h2>
+{% for review in reviews %}
+  <div>
+    <strong>{{ review.user }}</strong> - {{ review.rating }}/5<br>
+    {{ review.content }}
+    
+    <h4>Comments:</h4>
+    {% for comment in review.comment_set.all %}
+      <p>{{ comment.user }}: {{ comment.body }}</p>
+    {% empty %}
+      <p>No comments yet.</p>
+    {% endfor %}
+  </div>
+{% empty %}
+  <p>No reviews yet.</p>
+{% endfor %}
