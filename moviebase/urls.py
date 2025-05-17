@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from reviews import views as review_views
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('reviews.urls')),
+    path('movies/', include('reviews.urls')),
+    path('', RedirectView.as_view(url='/movies/', permanent=True)),
 ]

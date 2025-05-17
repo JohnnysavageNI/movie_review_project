@@ -1,20 +1,16 @@
-<h1>{{ movie.title }}</h1>
-<p><strong>Genre:</strong> {{ movie.genre }}</p>
+{% extends 'base.html' %}
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ movie.title }}</h2>
 <p>{{ movie.description }}</p>
 
-<h2>Reviews</h2>
-{% for review in reviews %}
-  <div>
-    <strong>{{ review.user }}</strong> - {{ review.rating }}/5<br>
-    {{ review.content }}
-    
-    <h4>Comments:</h4>
-    {% for comment in review.comment_set.all %}
-      <p>{{ comment.user }}: {{ comment.body }}</p>
+<h3>Reviews</h3>
+<ul>
+    {% for review in reviews %}
+        <li>{{ review.rating }} stars – {{ review.comment }}</li>
     {% empty %}
-      <p>No comments yet.</p>
+        <li>No reviews yet.</li>
     {% endfor %}
-  </div>
-{% empty %}
-  <p>No reviews yet.</p>
-{% endfor %}
+</ul>
+{% endblock %}
