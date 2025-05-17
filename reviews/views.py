@@ -9,6 +9,7 @@ class MovieListView(ListView):
     model = Movie
     template_name = 'reviews/movie_list.html'
     context_object_name = 'movies'
+    paginate_by = 9
 
 
 class MovieDetailView(DetailView):
