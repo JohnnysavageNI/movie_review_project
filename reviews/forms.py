@@ -5,3 +5,7 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['rating', 'content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 3}),
+            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+        }

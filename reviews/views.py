@@ -1,9 +1,10 @@
 from django.views.generic import ListView, DetailView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import Movie, Review, Comment
 from .forms import ReviewForm
+from django.db.models import Avg
 
 # Create your views here.
 
@@ -15,6 +16,7 @@ class MovieListView(ListView):
     paginate_by = 9
 
 
+@method_decorator(login_required, name='dispatch')
 class MovieDetailView(DetailView):
     model = Movie
     template_name = 'reviews/movie_detail.html'
@@ -22,10 +24,13 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reviews'] = Review.objects.filter(movie=self.object)
-        context['form'] = ReviewForm()
-        return context
+        movie = self.object
+        reviews = Review.objects.filter(movie=movie)
 
+        context['reviews'] = reviews
+        context['form'] = ReviewForm()
+        context['average_rating'] = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+        return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
