@@ -30,53 +30,17 @@ class Movie(models.Model):
 
 
 class Review(models.Model):
-    movie = models.ForeignKey(
-        Movie,
-        on_delete=models.CASCADE,
-        related_name='reviews'
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='reviews'
-    )
-    rating = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )
-    content = models.TextField()
+    movie = models.ForeignKey('Movie', on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField() 
     created_on = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(
-        choices=STATUS,
-        default=1
-    )
 
     class Meta:
-        ordering = ['-created_on']
-
-    def __str__(self):
-        return f"Review by {self.user} for {self.movie}"
+        unique_together = ('user', 'movie')
 
 
 class Comment(models.Model):
-    review = models.ForeignKey(
-        Review,
-        on_delete=models.CASCADE,
-        related_name='comments'
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='comments'
-    )
-    body = models.TextField()
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    approved = models.IntegerField(
-        choices=APPROVAL,
-        default=0
-    )
-
-    class Meta:
-        ordering = ['created_on']
-
-    def __str__(self):
-        return f"Comment by {self.user} on {self.review}"

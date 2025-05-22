@@ -22,7 +22,7 @@
                     {% if movie.description %}
                     <p class="card-text">{{ movie.description|truncatechars:100 }}</p>
                     {% endif %}
-                    <a href="{% url 'movie_detail' movie.pk %}" class="btn btn-primary mt-auto">View Details</a>
+                    <a href="{% url 'movie_detail' movie.pk %}" class="btn btn-primary mt-auto">View Comments</a>
                 </div>
             </div>
         </div>
