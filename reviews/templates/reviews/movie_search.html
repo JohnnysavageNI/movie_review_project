@@ -1,19 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h2>Search Results for "{{ query }}"</h2>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h2 class="text-center mb-4 text-dark">
+            Search Results for "<span class="text-danger">{{ query }}</span>"
+          </h2>
 
-  {% if results %}
-    <ul class="list-group">
-      {% for movie in results %}
-        <li class="list-group-item">
-          <a href="{% url 'movie_detail' movie.pk %}">
-            <strong>{{ movie.title }}</strong> — {{ movie.genre }}<br>
-            <small>{{ movie.description|truncatechars:100 }}</small>
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No movies matched your search.</p>
-  {% endif %}
+          {% if results %}
+            <ul class="list-group list-group-flush">
+              {% for movie in results %}
+                <li class="list-group-item">
+                  <a href="{% url 'movie_detail' movie.pk %}" class="text-decoration-none">
+                    <strong>{{ movie.title }}</strong> <span class="text-muted">— {{ movie.genre }}</span><br>
+                    <small class="text-secondary">{{ movie.description|truncatechars:100 }}</small>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-center text-muted">No movies matched your search.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

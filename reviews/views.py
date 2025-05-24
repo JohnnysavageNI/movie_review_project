@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Movie, Review, Comment
 from .forms import ReviewForm, CommentForm
+from django.conf import settings
 
 
 def movie_search(request):
@@ -32,7 +33,6 @@ class MovieListView(ListView):
     paginate_by = 9
 
 
-@method_decorator(login_required, name='dispatch')
 class MovieDetailView(DetailView):
     model = Movie
     template_name = 'reviews/movie_detail.html'
@@ -51,6 +51,10 @@ class MovieDetailView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+
+        if not request.user.is_authenticated:
+            return redirect(f"{settings.LOGIN_URL}?next={request.path}")
+
         self.object = self.get_object()
 
         if "submit_review" in request.POST:
@@ -86,7 +90,6 @@ class MovieDetailView(DetailView):
             return redirect('movie_detail', pk=self.object.pk)
 
         return self.get(request, *args, **kwargs)
-
 
 
 @login_required
