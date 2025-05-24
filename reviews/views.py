@@ -52,25 +52,25 @@ class MovieDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        review_form = ReviewForm(request.POST)
-        comment_form = CommentForm(request.POST)
 
-        if 'submit_review' in request.POST:
-                if review_form.is_valid():
-                    if Review.objects.filter(movie=self.object, user=request.user).exists():
-                        messages.error(request, "You have already reviewed this movie.")
-                    else:
-                        Review.objects.create(
-                            movie=self.object,
-                            user=request.user,
-                            rating=review_form.cleaned_data['rating']
-                        )
-                        messages.success(request, "Review submitted successfully!")
-                    return redirect('movie_detail', pk=self.object.pk)
+        if "submit_review" in request.POST:
+            review_form = ReviewForm(request.POST)
+            if review_form.is_valid():
+                if Review.objects.filter(movie=self.object, user=request.user).exists():
+                    messages.error(request, "You have already reviewed this movie.")
                 else:
-                    messages.error(request, "Error submitting review.")
+                    Review.objects.create(
+                        movie=self.object,
+                        user=request.user,
+                        rating=review_form.cleaned_data['rating']
+                    )
+                    messages.success(request, "Review submitted successfully!")
+            else:
+                messages.error(request, "Error submitting review.")
+            return redirect('movie_detail', pk=self.object.pk)
 
-        elif 'submit_comment' in request.POST:
+        elif "submit_comment" in request.POST:
+            comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.user = request.user
@@ -81,14 +81,12 @@ class MovieDetailView(DetailView):
                     return redirect('movie_detail', pk=self.object.pk)
                 comment.save()
                 messages.success(request, "Comment submitted successfully!")
-                return redirect('movie_detail', pk=self.object.pk)
             else:
                 messages.error(request, "Error submitting comment.")
+            return redirect('movie_detail', pk=self.object.pk)
 
-        context = self.get_context_data()
-        context['review_form'] = review_form
-        context['comment_form'] = comment_form
-        return self.render_to_response(context)
+        return self.get(request, *args, **kwargs)
+
 
 
 @login_required
@@ -137,7 +135,7 @@ def comment_delete(request, pk, comment_id):
 
     if comment.user == request.user:
         comment.delete()
-        messages.success(request, "Comment deleted successfully!")
+        messages.success(request, "Your comment has been deleted.")
     else:
-        messages.error(request, "You can only delete your own comments.")
-    return HttpResponseRedirect(reverse('movie_detail', args=[movie.pk]))
+        messages.error(request, "You are not allowed to delete this comment.")
+    return redirect('movie_detail', pk=movie.pk)

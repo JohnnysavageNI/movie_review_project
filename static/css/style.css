@@ -155,3 +155,25 @@ body {
 .approval {
     color: rgb(222, 146, 168);
 }
+
+.btn-comment {
+  background-color: #b30000;
+  color: white;
+  border: none;
+}
+
+.btn-comment:hover {
+  background-color: #800000;
+  color: white;
+}
+
+.card-body h2 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  color: #b30000;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+}
