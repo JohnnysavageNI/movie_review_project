@@ -43,7 +43,7 @@ class MovieDetailView(DetailView):
         movie = self.object
         reviews = Review.objects.filter(movie=movie).select_related('user')
         context['reviews'] = reviews
-        context['comments'] = Comment.objects.filter(review__movie=movie).select_related('user')
+        context['comments'] = Comment.objects.filter(movie=movie).select_related('user')
         context['review_form'] = ReviewForm()
         context['comment_form'] = CommentForm()
         context['average_rating'] = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
@@ -78,11 +78,7 @@ class MovieDetailView(DetailView):
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.user = request.user
-                try:
-                    comment.review_id = int(request.POST.get('review_id'))
-                except (TypeError, ValueError):
-                    messages.error(request, "Invalid review for comment.")
-                    return redirect('movie_detail', pk=self.object.pk)
+                comment.movie = self.object
                 comment.save()
                 messages.success(request, "Comment submitted successfully!")
             else:

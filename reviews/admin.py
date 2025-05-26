@@ -16,4 +16,4 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('review', 'user', 'content')
+    list_display = ('movie', 'user', 'content', 'created_on')
