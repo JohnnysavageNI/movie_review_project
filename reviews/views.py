@@ -43,10 +43,14 @@ class MovieDetailView(DetailView):
         movie = self.object
         reviews = Review.objects.filter(movie=movie).select_related('user')
         context['reviews'] = reviews
-        context['comments'] = Comment.objects.filter(movie=movie).select_related('user')
+        context['comments'] = Comment.objects.filter(
+            movie=movie
+        ).select_related('user')
         context['review_form'] = ReviewForm()
         context['comment_form'] = CommentForm()
-        context['average_rating'] = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+        context['average_rating'] = (
+            reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+        )
         context['star_range'] = range(1, 6)
         return context
 
@@ -60,8 +64,14 @@ class MovieDetailView(DetailView):
         if "submit_review" in request.POST:
             review_form = ReviewForm(request.POST)
             if review_form.is_valid():
-                if Review.objects.filter(movie=self.object, user=request.user).exists():
-                    messages.error(request, "You have already reviewed this movie.")
+                if Review.objects.filter(
+                    movie=self.object,
+                    user=request.user
+                ).exists():
+                    messages.error(
+                        request,
+                        "You have already reviewed this movie."
+                    )
                 else:
                     Review.objects.create(
                         movie=self.object,

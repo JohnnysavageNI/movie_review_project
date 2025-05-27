@@ -30,9 +30,13 @@ class Movie(models.Model):
 
 
 class Review(models.Model):
-    movie = models.ForeignKey('Movie', on_delete=models.CASCADE, related_name='reviews')
+    movie = models.ForeignKey(
+        'Movie',
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField() 
+    rating = models.PositiveSmallIntegerField()
     created_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -40,7 +44,11 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="comments")
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name="comments"
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
